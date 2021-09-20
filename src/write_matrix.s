@@ -27,16 +27,67 @@
 write_matrix:
 
     # Prologue
+    addi sp, sp, -24
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
+    sw s3, 12(sp)
+    sw s4, 16(sp)
+    sw ra, 20(sp)
 
+    mv s0 a0
+    mv s1 a1
+    mv s2 a2
+    mv s3 a3
 
+    mv a1 s0
+    li a2 1
+    jal fopen
+    mv s4 a0 # s4 = fopen(s0, 1)
+    li t0 1
+    blt a0, t0, fopen_bad
 
+    mv a1 s4
+    addi sp, sp, -8
+    sw s2 0(sp)
+    sw s3 4(sp)
+    mv a2 sp
+    li a3 2
+    li a4 4
+    jal fwrite # fwrite(f, ??, 2, 4)
+    addi sp, sp, 8
+    li t0 2
+    bne a0, t0, fwrite_bad
 
+    mv a1 s4
+    mv a2 s1
+    mul a3, s2, s3 # sz = s2*s3
+    li a4, 4
+    jal fwrite # fwrite(f, s1, sz, 4)
 
-
-
-
+    mv a1 s4
+    jal fclose
 
     # Epilogue
-
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw s3, 12(sp)
+    lw s4, 16(sp)
+    lw ra, 20(sp)
+    addi sp, sp, 24
 
     ret
+
+fopen_bad:
+    li a1 53
+    jal exit2
+fwrite_bad:
+    li a1 54
+    jal exit2
+fclose_bad:
+    li a1 55
+    jal exit2
+bad:
+    li a1 123
+    jal exit2
