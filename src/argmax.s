@@ -18,22 +18,26 @@ argmax:
 
     # Prologue
 
+    add t0, x0, x0 # counter
+    add t3, x0, x0 # max index
+    lw t4, 0(a0) # max value
 
 loop_start:
-
-
-
-
-
-
-
+    beq t0, a1, loop_end
+    addi t1, x0, 4
+    mul t1, t1, t0
+    add t1, t1, a0 
+    lw t2, 0(t1)
+    bge t4, t2, loop_continue
+    add t4, x0, t2
+    add t3, x0, t0
 
 loop_continue:
-
-
+    addi t0, t0, 1
+    jal x0, loop_start
 
 loop_end:
-    
+    addi a0, t3, 0
 
     # Epilogue
 
