@@ -20,23 +20,32 @@
 dot:
 
     # Prologue
-
+    add t0, x0, x0 # sum
+    add t1, x0, x0 # counter
 
 loop_start:
+    beq t1, a2, loop_end
 
+    addi t2, x0, 4
+    mul t2, t2, t1
+    mul t2, t2, a3
+    add t2, t2, a0
+    lw t4, 0(t2)
 
+    addi t2, x0, 4
+    mul t2, t2, t1
+    mul t2, t2, a4
+    add t2, t2, a1
+    lw t5, 0(t2)
 
+    mul t4, t4, t5
 
+    add t0, t0, t4
 
-
-
-
-
-
-
-
+    addi t1, t1, 1
+    jal x0, loop_start
 loop_end:
-
+    add a0, t0, x0
 
     # Epilogue
 
